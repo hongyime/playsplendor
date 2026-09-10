@@ -1,25 +1,32 @@
 #!/bin/bash
 # Move to project root
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.." || exit 1
 
 echo "=== Splendor Test Suite ==="
 echo ""
 
 # Handle arguments
 COVERAGE=""
-VERBOSE=""
+VERBOSE=()
 CATEGORY=""
 SPECIFIC_CLASS=""
 EXCLUDE_PACKAGES=()
 INCLUDE_NETWORK=""
 
+require_value() {
+    if [[ $# -lt 2 || -z "$2" || "$2" == --* ]]; then
+        echo "Missing value for $1" >&2
+        exit 2
+    fi
+}
+
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --coverage) COVERAGE="true" ;;
-        --verbose) VERBOSE="--details verbose" ;;
-        --category) CATEGORY="$2"; shift ;;
-        --class) SPECIFIC_CLASS="$2"; shift ;;
-        --exclude-package) EXCLUDE_PACKAGES+=("$2"); shift ;;
+        --verbose) VERBOSE=(--details verbose) ;;
+        --category) require_value "$@"; CATEGORY="$2"; shift ;;
+        --class) require_value "$@"; SPECIFIC_CLASS="$2"; shift ;;
+        --exclude-package) require_value "$@"; EXCLUDE_PACKAGES+=("$2"); shift ;;
         --include-network) INCLUDE_NETWORK="true" ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
@@ -29,7 +36,7 @@ done
 # Compile main sources first
 echo "1. Compiling main sources..."
 mkdir -p classes
-javac -d classes -sourcepath src \
+javac --release 17 -encoding UTF-8 -d classes -sourcepath src \
   src/com/splendor/*.java \
   src/com/splendor/config/*.java \
   src/com/splendor/controller/*.java \
@@ -55,24 +62,27 @@ echo "2. Compiling test sources..."
 mkdir -p test-classes
 
 # Find all test Java files
-if [ -n "$INCLUDE_NETWORK" ]; then
-    TEST_FILES=$(find test -name "*.java" 2>/dev/null)
-else
-    TEST_FILES=$(find test -name "*.java" ! -path "*/test/com/splendor/network/*" 2>/dev/null)
+TEST_FILES=()
+while IFS= read -r -d '' file; do
+    if [[ -n "$INCLUDE_NETWORK" || "$file" != test/com/splendor/network/* ]]; then
+        TEST_FILES+=("$file")
+    fi
+done < <(find test -name '*.java' -print0)
+if [ -z "$INCLUDE_NETWORK" ]; then
     echo "   Network tests excluded from compilation. Use --include-network to include them."
 fi
-if [ -z "$TEST_FILES" ]; then
+if [ ${#TEST_FILES[@]} -eq 0 ]; then
     echo "   No test files found in test/"
-    exit 0
+    exit 1
 fi
 
 # Unix classpath separator
 CP_SEP=":"
 
-javac -d test-classes \
+javac --release 17 -encoding UTF-8 -d test-classes \
   -cp "classes${CP_SEP}lib/junit-platform-console-standalone-1.10.2.jar" \
   -sourcepath test \
-  $TEST_FILES
+  "${TEST_FILES[@]}"
 
 if [ $? -ne 0 ]; then
     echo "ERROR: Test compilation failed!"
@@ -84,28 +94,26 @@ echo "   Test sources compiled OK."
 echo "3. Running tests..."
 echo ""
 
-JUNIT_CMD="java -jar lib/junit-platform-console-standalone-1.10.2.jar execute --class-path test-classes${CP_SEP}classes"
+JUNIT_CMD=(java -jar lib/junit-platform-console-standalone-1.10.2.jar execute --class-path "test-classes${CP_SEP}classes" --fail-if-no-tests)
 
-if [ -n "$VERBOSE" ]; then
-    JUNIT_CMD="$JUNIT_CMD $VERBOSE"
-fi
+JUNIT_CMD+=("${VERBOSE[@]}")
 
 if [ -n "$SPECIFIC_CLASS" ]; then
-    JUNIT_CMD="$JUNIT_CMD --select-class $SPECIFIC_CLASS"
+    JUNIT_CMD+=(--select-class "$SPECIFIC_CLASS")
 elif [ -n "$CATEGORY" ]; then
     # Assuming category maps to a package or naming convention
-    JUNIT_CMD="$JUNIT_CMD --select-package $CATEGORY"
+    JUNIT_CMD+=(--select-package "$CATEGORY")
 else
-    JUNIT_CMD="$JUNIT_CMD --scan-class-path test-classes"
+    JUNIT_CMD+=(--scan-class-path test-classes)
 fi
 
 for pkg in "${EXCLUDE_PACKAGES[@]}"; do
-    JUNIT_CMD="$JUNIT_CMD --exclude-package $pkg"
+    JUNIT_CMD+=(--exclude-package "$pkg")
 done
 
 # Network integration tests are opt-in to keep local and CI-like runs deterministic.
 if [ -z "$INCLUDE_NETWORK" ]; then
-    JUNIT_CMD="$JUNIT_CMD --exclude-package com.splendor.network"
+    JUNIT_CMD+=(--exclude-package com.splendor.network)
 fi
 
 # Add coverage if requested (requires jacoco agent in lib/ which may not exist, so mock it for the script)
@@ -113,7 +121,7 @@ if [ -n "$COVERAGE" ]; then
     echo "[Note: Coverage requires JaCoCo agent which might not be configured. Proceeding with standard run.]"
 fi
 
-eval $JUNIT_CMD
+"${JUNIT_CMD[@]}"
 JUNIT_EXIT=$?
 
 if [ $JUNIT_EXIT -ne 0 ]; then

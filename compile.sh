@@ -1,10 +1,11 @@
 #!/bin/bash
+cd "$(dirname "$0")" || exit 1
 echo "Building Splendor Java Project..."
 
 mkdir -p classes
 
 echo "Compiling Java sources..."
-javac -d classes -sourcepath src \
+javac --release 17 -encoding UTF-8 -d classes -sourcepath src \
 src/com/splendor/*.java \
 src/com/splendor/config/*.java \
 src/com/splendor/controller/*.java \
