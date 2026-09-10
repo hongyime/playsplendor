@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 REM Move to project root
-cd /d "%~dp0.."
+cd /d "%~dp0.." || exit /b 1
 
 echo === Splendor Test Suite ===
 echo.
@@ -17,18 +17,39 @@ set "INCLUDE_NETWORK="
 if "%~1"=="" goto args_done
 if /i "%~1"=="--coverage" set "COVERAGE=true" & shift & goto parse_args
 if /i "%~1"=="--verbose" set "VERBOSE=--details verbose" & shift & goto parse_args
-if /i "%~1"=="--category" set "CATEGORY=%~2" & shift & shift & goto parse_args
-if /i "%~1"=="--class" set "SPECIFIC_CLASS=%~2" & shift & shift & goto parse_args
-if /i "%~1"=="--exclude-package" set "EXCLUDE_PACKAGE=!EXCLUDE_PACKAGE! %~2" & shift & shift & goto parse_args
+if /i "%~1"=="--category" (
+    if "%~2"=="" goto missing_value
+    set "CATEGORY=%~2"
+    shift
+    shift
+    goto parse_args
+)
+if /i "%~1"=="--class" (
+    if "%~2"=="" goto missing_value
+    set "SPECIFIC_CLASS=%~2"
+    shift
+    shift
+    goto parse_args
+)
+if /i "%~1"=="--exclude-package" (
+    if "%~2"=="" goto missing_value
+    set "EXCLUDE_PACKAGE=!EXCLUDE_PACKAGE! "%~2""
+    shift
+    shift
+    goto parse_args
+)
 if /i "%~1"=="--include-network" set "INCLUDE_NETWORK=true" & shift & goto parse_args
 echo Unknown parameter passed: %~1
 exit /b 1
+:missing_value
+echo Missing value for %~1
+exit /b 2
 :args_done
 
 REM Compile main sources first
 echo 1. Compiling main sources...
 if not exist classes mkdir classes
-javac -d classes -sourcepath src ^
+javac --release 17 -encoding UTF-8 -d classes -sourcepath src ^
   src/com/splendor/*.java ^
   src/com/splendor/config/*.java ^
   src/com/splendor/controller/*.java ^
@@ -60,11 +81,11 @@ set "TEST_FILES="
 for /r test %%f in (*.java) do (
     set "FILE_PATH=%%f"
     if defined INCLUDE_NETWORK (
-        set "TEST_FILES=!TEST_FILES! %%f"
+        set "TEST_FILES=!TEST_FILES! "%%f""
     ) else (
         set "WITHOUT_NETWORK=!FILE_PATH:\test\com\splendor\network\=!"
         if /I "!WITHOUT_NETWORK!"=="!FILE_PATH!" (
-            set "TEST_FILES=!TEST_FILES! %%f"
+            set "TEST_FILES=!TEST_FILES! "%%f""
         )
     )
 )
@@ -73,12 +94,12 @@ if not defined INCLUDE_NETWORK (
     echo    Network tests excluded from compilation. Use --include-network to include them.
 )
 
-if "!TEST_FILES!"=="" (
+if not defined TEST_FILES (
     echo    No test files found in test/
-    exit /b 0
+    exit /b 1
 )
 
-javac -d test-classes ^
+javac --release 17 -encoding UTF-8 -d test-classes ^
   -cp "classes;lib/junit-platform-console-standalone-1.10.2.jar" ^
   -sourcepath test ^
   !TEST_FILES!
@@ -93,23 +114,23 @@ REM Run tests
 echo 3. Running tests...
 echo.
 
-set "JUNIT_CMD=java -jar lib/junit-platform-console-standalone-1.10.2.jar execute --class-path "test-classes;classes""
+set "JUNIT_CMD=java -jar lib/junit-platform-console-standalone-1.10.2.jar execute --class-path "test-classes;classes" --fail-if-no-tests"
 
 if defined VERBOSE (
     set "JUNIT_CMD=!JUNIT_CMD! !VERBOSE!"
 )
 
 if defined SPECIFIC_CLASS (
-    set "JUNIT_CMD=!JUNIT_CMD! --select-class !SPECIFIC_CLASS!"
+    set "JUNIT_CMD=!JUNIT_CMD! --select-class "!SPECIFIC_CLASS!""
 ) else if defined CATEGORY (
-    set "JUNIT_CMD=!JUNIT_CMD! --select-package !CATEGORY!"
+    set "JUNIT_CMD=!JUNIT_CMD! --select-package "!CATEGORY!""
 ) else (
     set "JUNIT_CMD=!JUNIT_CMD! --scan-class-path test-classes"
 )
 
 if defined EXCLUDE_PACKAGE (
     for %%p in (!EXCLUDE_PACKAGE!) do (
-        set "JUNIT_CMD=!JUNIT_CMD! --exclude-package %%p"
+        set "JUNIT_CMD=!JUNIT_CMD! --exclude-package "%%~p""
     )
 )
 

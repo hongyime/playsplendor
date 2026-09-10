@@ -148,14 +148,13 @@ class MoveFormatterTest {
     }
 
     @Test
-    @DisplayName("Multiple gems appear in canonical order (W B G R K Au)")
+    @DisplayName("Multiple gems follow the shared UI order (R G B W K Au)")
     void formatGemCountsCanonicalOrder() {
-        // Insert in reverse order — output should still be W B G R K Au
+        // EnumMap iteration differs from the explicit UI display order.
         Map<Gem, Integer> gems = gems(Gem.GOLD, 1, Gem.BLACK, 2, Gem.RED, 1,
                                        Gem.GREEN, 3, Gem.BLUE, 1, Gem.WHITE, 2);
         String result = stripAnsi(MoveFormatter.formatGemCounts(gems));
-        // Expected: "W2 B1 G3 R1 K2 Au1"
-        assertEquals("W2 B1 G3 R1 K2 Au1", result);
+        assertEquals("R1 G3 B1 W2 K2 Au1", result);
     }
 
     @Test

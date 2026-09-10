@@ -1,0 +1,66 @@
+{
+  "source_revision": "0da5b4fd8f86f545053a306b1a531bbc4a0dedab",
+  "notice": "Historical diagrams restored without changing their contents; current class documentation is generated from src/.",
+  "files": [
+    {
+      "historical_path": "docs/diagrams/splendor.puml",
+      "path": "site/diagrams/splendor.puml",
+      "sha256": "30700e741e40abcbb02e37785ee3391fce7520e315c3d880d3afafb3031a10c5",
+      "bytes": 18760
+    },
+    {
+      "historical_path": "docs/diagrams/auto_generated/splendor.png",
+      "path": "site/diagrams/splendor.png",
+      "sha256": "59ec9fc605911915f3a22d22d87ca5d01c4a0c4a3a979990ac6c8d97edf171aa",
+      "bytes": 406122
+    },
+    {
+      "historical_path": "docs/diagrams/splendor-class-light.puml",
+      "path": "site/diagrams/splendor-class-light.puml",
+      "sha256": "65f3952c13289c72b8c9d5fd26a1eceae48eeab1c3cfe3b43468d4f5cbeb9c61",
+      "bytes": 2552
+    },
+    {
+      "historical_path": "docs/diagrams/auto_generated/splendor_class_light.png",
+      "path": "site/diagrams/splendor-class-light.png",
+      "sha256": "dfa185998543a9ca1153c67d1dd82078d7487156ef3d300952bc865af5b04426",
+      "bytes": 62463
+    },
+    {
+      "historical_path": "docs/diagrams/splendor-dependency.puml",
+      "path": "site/diagrams/splendor-dependency.puml",
+      "sha256": "4d0bcff8853f599f028903064a11a2b950687b82d380343ef89719c54f4868ad",
+      "bytes": 3209
+    },
+    {
+      "historical_path": "docs/diagrams/auto_generated/splendor_dependency.png",
+      "path": "site/diagrams/splendor-dependency.png",
+      "sha256": "3ddbfb7f4f4f88e4287e4fc1966e83f2d1e0b0a460f27084f65fb60f1cb37585",
+      "bytes": 101497
+    },
+    {
+      "historical_path": "docs/diagrams/splendor-functional.puml",
+      "path": "site/diagrams/splendor-functional.puml",
+      "sha256": "19a2af34e6b9cca723cf01ca4449907ce889ecb825446483de4fb8f6b0414e5e",
+      "bytes": 1677
+    },
+    {
+      "historical_path": "docs/diagrams/auto_generated/splendor_functional.png",
+      "path": "site/diagrams/splendor-functional.png",
+      "sha256": "586a8fdbd619d20ef67c044bb983a7f0432a1f8c80970e7614d5abdc6ed4eb16",
+      "bytes": 75774
+    },
+    {
+      "historical_path": "docs/diagrams/splendor-inheritance.puml",
+      "path": "site/diagrams/splendor-inheritance.puml",
+      "sha256": "999cadeb5b5b2809f40af24955611e4ae986aea23738ce5eb0b59abe02f42f45",
+      "bytes": 3690
+    },
+    {
+      "historical_path": "docs/diagrams/auto_generated/splendor_inheritance.png",
+      "path": "site/diagrams/splendor-inheritance.png",
+      "sha256": "2ee865a585e3e911b89675ad81e0d356482ba1d256bb084f6436d774d0fbae6a",
+      "bytes": 91326
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+@startuml splendor_class_light
+skinparam backgroundColor #FFFFFF
+skinparam linetype ortho
+skinparam rankdir LR
+skinparam shadowing false
+skinparam defaultFontSize 11
+skinparam classAttributeIconSize 0
+skinparam padding 2
+skinparam nodesep 20
+skinparam ranksep 30
+
+title Splendor — Lightweight Class Overview
+
+class Main
+interface IConfigProvider
+class FileConfigProvider
+class ConfigValidator
+class ConfigKeys
+
+class SplendorException
+class GameStateException
+class InsufficientTokensException
+class InvalidMoveException
+class InvalidPlayerActionException
+class NetworkException
+class ConfigException
+class DataLoadException
+
+class Player
+class ComputerPlayer
+class Card
+class Noble
+enum Gem
+class Move
+enum MoveType
+class Board
+class Game
+enum GameState
+enum MenuAction
+class MenuOption
+
+class GameRuleValidator
+class MoveValidator
+class ValidationResult
+
+class GameController
+class TurnController
+class PlayerController
+class BotStrategy
+class MenuBuilder
+
+interface IGameView
+class ConsoleView
+class GameRenderer
+class CardRenderer
+class NetworkGameView
+class RemoteView
+class Colors
+
+interface NetworkMessageHandler
+class ServerSocketHandler
+class ClientHandler
+
+class CardLoader
+class CsvCardParser
+
+class AnsiUtils
+class GameLogger
+class InputResolver
+class MoveFormatter
+
+' Config
+IConfigProvider <|.. FileConfigProvider
+
+' Exception hierarchy
+SplendorException <|-- GameStateException
+SplendorException <|-- InsufficientTokensException
+SplendorException <|-- InvalidMoveException
+SplendorException <|-- InvalidPlayerActionException
+SplendorException <|-- NetworkException
+
+' Model
+Player <|-- ComputerPlayer
+Game *-- Board
+Game *-- Player
+Game --> GameState
+Move --> MoveType
+MenuOption --> MenuAction
+Card --> Gem
+
+' Validator
+MoveValidator ..> ValidationResult
+
+' View
+IGameView <|.. ConsoleView
+IGameView <|.. NetworkGameView
+IGameView <|.. RemoteView
+NetworkGameView *-- RemoteView
+ConsoleView --> GameRenderer
+RemoteView --> GameRenderer
+GameRenderer --> CardRenderer
+
+' Network
+NetworkMessageHandler <|.. ServerSocketHandler
+ServerSocketHandler *-- ClientHandler
+
+' Data
+CardLoader ..> CsvCardParser
+
+' Cross-layer
+Main --> GameController
+Main --> IConfigProvider
+GameController --> IGameView
+GameController --> Game
+GameController --> MoveValidator
+GameController --> GameRuleValidator
+GameController ..> TurnController
+GameController ..> PlayerController
+GameController ..> BotStrategy
+GameController ..> MenuBuilder
+TurnController --> Game
+PlayerController --> Game
+RemoteView --> NetworkMessageHandler
+Board ..> CardLoader
+
+@enduml

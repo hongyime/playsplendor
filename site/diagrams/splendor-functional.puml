@@ -1,0 +1,58 @@
+@startuml splendor_functional
+skinparam backgroundColor #FFFFFF
+skinparam linetype ortho
+skinparam rankdir LR
+skinparam shadowing false
+skinparam defaultFontSize 11
+skinparam padding 2
+skinparam nodesep 20
+skinparam ranksep 30
+
+title Splendor — Functional Flow (Game Turn Sequence)
+
+participant "Main" as M
+participant "GameController" as GC
+participant "TurnController" as TC
+participant "PlayerController" as PC
+participant "MoveValidator" as MV
+participant "BotStrategy" as BS
+participant "IGameView" as V
+participant "Game" as G
+participant "Board" as B
+participant "Player" as P
+
+M -> GC : initializeGame()
+M -> GC : startGame()
+loop while !game.isGameFinished()
+  GC -> G : saveUndoState()
+  GC -> V : displayGameState(game)
+  GC -> V : displayPlayerTurn(currentPlayer)
+  alt Human Player
+    GC -> V : promptForMove(player, game, options)
+    V --> GC : Move
+    GC -> MV : validateMove(move, player, game)
+  else Computer Player
+    GC -> BS : chooseBotMove(player, game, validator)
+    BS --> GC : Move
+    GC -> MV : validateMove(move, player, game)
+  end
+  GC -> TC : executeMove(move, player)
+  TC -> B : removeGems / drawCard / addGems
+  TC -> P : addTokens / addPurchasedCard / addReservedCard
+  GC -> PC : checkNobleVisits(player)
+  PC -> B : getAvailableNobles()
+  PC -> P : getGemDiscounts()
+  opt Noble qualifies
+    PC -> B : removeAvailableNoble(noble)
+    PC -> P : addNoble(noble)
+  end
+  opt Player exceeds token limit
+    GC -> V : promptForTokenDiscard(player, excess)
+    V --> GC : discardMove
+    GC -> PC : executeTokenDiscard(player, discardMove)
+  end
+  GC -> G : advanceToNextPlayer()
+end
+GC -> V : displayWinner(winner, finalScores)
+
+@enduml

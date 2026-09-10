@@ -1,0 +1,10 @@
+# Current work
+
+2026-09-11: Splendor maintenance in draft PR #148 under the accepted portfolio plan.
+
+- Base: ebb1f4fbe2e83bf17f44dfb8e7b52bfaa8ef6031. The original checkout and card/config bytes are preserved; changes are isolated in a checkout with spaces in its path.
+- Task list: reproduce runner failures; correct confirmed quoting/encoding/selector defects; verify the shared gem display order; repair the public documentation 404; test Linux/Windows and desktop/mobile; publish and verify the exact Pages artifact; synchronize the original checkout and update the portfolio plans.
+- Commits 2d1ac47 and 1d09e7 fix source-path quoting, Bash argument boundaries/network exclusion, missing selector validation and explicit Java 17 UTF-8 compilation. Hosted run 34524267142 passes six Bash fixtures and 12 real formatter tests on Windows Java 17. The original formatter expectation disagreed with Gem.displayOrder; production order is unchanged.
+- Nine legacy documentation failures depended on removed artifacts/tooling. Replacement checks generate real Javadoc and require every source type/package and all five recovered diagram pairs. The site builder uses only Python standard library and the installed JDK; it validates local file links and records file hashes. Historical PNG/PlantUML assets retain provenance and are labeled archived.
+- Public Pages currently redirects to a missing docs/javadoc/index.html. The replacement guide preserves this API URL in an isolated build artifact. Local Windows verification passes all 149 non-network tests without skips. The local site build documents all 49 Java source types and checks 2,925 local links. Browser checks, hosted full-suite/build verification and production publication remain pending.
+- Full checks will run on Linux and Windows before the documentation workflow can deploy main. No live multiplayer, setup downloads, application records, paid services or Supabase migrations are part of this repair. Local Git Bash cannot fork; hosted Linux is the Bash verification authority.
