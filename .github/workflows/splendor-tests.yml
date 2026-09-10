@@ -1,34 +1,19 @@
 name: Splendor tests
 
 on:
-  pull_request:
-    branches: [main]
-    paths: ['src/**', 'test/**', '.github/workflows/splendor-tests.yml']
-  push:
-    branches: [main]
-    paths: ['src/**', 'test/**', '.github/workflows/splendor-tests.yml']
+  workflow_call:
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: splendor-tests-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  shell:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          path: 'Splendor workspace'
-      - name: Check Bash argument handling with synthetic Java tools
-        working-directory: 'Splendor workspace'
-        run: python3 test/runner_shell_checks.py -v
-  windows:
-    runs-on: windows-latest
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
@@ -38,7 +23,16 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Check real compilation and formatter in a path with spaces
+      - name: Check Bash argument handling with synthetic Java tools
+        if: runner.os == 'Linux'
+        working-directory: 'Splendor workspace'
+        run: python3 test/runner_shell_checks.py -v
+      - name: Run the full non-network suite on Linux
+        if: runner.os == 'Linux'
+        working-directory: 'Splendor workspace'
+        run: bash test/run_tests.sh
+      - name: Run the full non-network suite on Windows
+        if: runner.os == 'Windows'
         working-directory: 'Splendor workspace'
         shell: cmd
-        run: test\run_tests.bat --class com.splendor.util.MoveFormatterTest
+        run: test\run_tests.bat

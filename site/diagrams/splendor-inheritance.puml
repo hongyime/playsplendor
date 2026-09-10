@@ -1,0 +1,127 @@
+@startuml splendor_inheritance
+skinparam backgroundColor #FFFFFF
+skinparam linetype ortho
+skinparam rankdir LR
+skinparam shadowing false
+skinparam defaultFontSize 11
+skinparam classAttributeIconSize 0
+skinparam padding 2
+skinparam nodesep 20
+skinparam ranksep 30
+
+title Splendor — Inheritance & Interface Hierarchy
+
+class "Exception" as JavaException <<Java>> #LightGray
+
+' Exception hierarchy
+class SplendorException {
+  +SplendorException(message: String)
+  +SplendorException(messageFormat: String, args: Object...)
+  +SplendorException(message: String, cause: Throwable)
+}
+class GameStateException {
+  +GameStateException(message: String)
+  +GameStateException(messageFormat: String, args: Object...)
+}
+class InsufficientTokensException {
+  +InsufficientTokensException(message: String)
+  +InsufficientTokensException(messageFormat: String, args: Object...)
+}
+class InvalidMoveException {
+  +InvalidMoveException(message: String)
+  +InvalidMoveException(messageFormat: String, args: Object...)
+}
+class InvalidPlayerActionException {
+  +InvalidPlayerActionException(message: String)
+  +InvalidPlayerActionException(messageFormat: String, args: Object...)
+}
+class NetworkException {
+  +NetworkException(message: String)
+  +NetworkException(message: String, cause: Throwable)
+}
+class ConfigException {
+  +ConfigException(message: String)
+  +ConfigException(message: String, cause: Throwable)
+}
+class DataLoadException {
+  +DataLoadException(message: String)
+  +DataLoadException(message: String, cause: Throwable)
+}
+
+JavaException <|-- SplendorException
+JavaException <|-- ConfigException
+JavaException <|-- DataLoadException
+SplendorException <|-- GameStateException
+SplendorException <|-- InsufficientTokensException
+SplendorException <|-- InvalidMoveException
+SplendorException <|-- InvalidPlayerActionException
+SplendorException <|-- NetworkException
+
+' Player hierarchy
+class Player {
+  +Player(name: String)
+  +getName(): String
+  +getTotalPoints(): int
+  +getGemDiscounts(): Map<Gem,Integer>
+}
+class ComputerPlayer {
+  +ComputerPlayer(name: String)
+}
+Player <|-- ComputerPlayer
+
+' View interface hierarchy
+interface IGameView {
+  +displayGameState(game: Game): void
+  +promptForMove(player: Player, game: Game, options: List<MenuOption>): Move
+  +promptForTokenDiscard(player: Player, excessCount: int): Move
+  +displayWinner(winner: Player, finalScores: Map<String,Integer>): void
+  +waitForEnter(): String
+  +close(): void
+}
+class ConsoleView {
+  +ConsoleView(config: IConfigProvider)
+}
+class NetworkGameView {
+  +NetworkGameView(playerViews: List<RemoteView>, playerCount: int)
+}
+class RemoteView {
+  +RemoteView(clientId: String, messageHandler: NetworkMessageHandler, config: IConfigProvider)
+}
+IGameView <|.. ConsoleView
+IGameView <|.. NetworkGameView
+IGameView <|.. RemoteView
+
+' Config interface hierarchy
+interface IConfigProvider {
+  +loadConfiguration(): void
+  +getStringProperty(key: String, defaultValue: String): String
+  +getIntProperty(key: String, defaultValue: int): int
+}
+class FileConfigProvider {
+  +FileConfigProvider()
+  +loadConfiguration(): void
+}
+IConfigProvider <|.. FileConfigProvider
+
+' Network interface hierarchy
+interface NetworkMessageHandler {
+  +sendToClient(clientId: String, message: String): void
+  +waitForClientResponse(clientId: String, timeoutMs: int): String
+}
+class ServerSocketHandler {
+  +ServerSocketHandler()
+  +startServer(): void
+  +broadcastToAllClients(message: String): void
+}
+NetworkMessageHandler <|.. ServerSocketHandler
+
+note bottom of ConfigException
+  extends Exception directly
+  (NOT SplendorException)
+end note
+note bottom of DataLoadException
+  extends Exception directly
+  (NOT SplendorException)
+end note
+
+@enduml

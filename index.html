@@ -1,11 +1,61 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="0; url=./docs/javadoc/index.html" />
-    <title>Splendor Docs Redirect</title>
-  </head>
-  <body>
-    <p>Redirecting to <a href="./docs/javadoc/index.html">Splendor Javadoc</a>...</p>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Splendor in Java: a console board game, local setup guide and current API documentation from The Prawn Projects.">
+  <title>Splendor · The Prawn Projects</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#start">Skip to setup</a>
+  <div class="shell">
+    <header><a class="brand" href="https://theprawnprojects.vercel.app/">THE PRAWN PROJECTS ↗</a><span class="utility">JAVA / BOARD GAMES</span></header>
+    <main>
+      <section class="intro" aria-labelledby="title">
+        <div><p class="eyebrow">A CONSOLE ADAPTATION OF SPLENDOR</p><h1>Collect gems.<br>Build your fortune.</h1>
+          <p class="lede">Buy development cards, earn prestige and plan your next move. Play locally in a Java console, with friends or computer opponents.</p>
+          <div class="actions"><a class="button" href="#start">Set up the game ↓</a><a class="button secondary" href="docs/javadoc/index.html">Browse Java API ↗</a></div>
+        </div>
+        <div class="tokens" role="img" aria-label="Gem display order: red, green, blue, white, black, gold">
+          <span class="token red">R</span><span class="token green">G</span><span class="token blue">B</span><span class="token">W</span><span class="token black">K</span><span class="token gold">Au</span>
+        </div>
+      </section>
+      <section id="start" class="section" aria-labelledby="start-title">
+        <p class="eyebrow">PLAY ON YOUR COMPUTER</p><h2 id="start-title">A JDK. A terminal. Your next move.</h2>
+        <p>Install Java JDK 17 or later, then <a href="https://github.com/hongyime/playsplendor/archive/refs/heads/main.zip">download the source ZIP</a> or clone the repository. Open a terminal in the project folder.</p>
+        <div class="columns">
+          <div class="card"><h3>Windows</h3><pre><code>.\compile.bat
+.\run.bat</code></pre><p>Use PowerShell or Command Prompt.</p></div>
+          <div class="card"><h3>macOS / Linux</h3><pre><code>bash compile.sh
+bash run.sh</code></pre><p>Run these commands from your terminal.</p></div>
+        </div>
+        <p class="note">The game runs on your computer. This website hosts the guide and API reference. Network multiplayer uses a separately run TCP server; it is not hosted by this page.</p>
+      </section>
+      <section class="section reference" aria-labelledby="code-title">
+        <div><p class="eyebrow">EXPLORE THE CODE</p><h2 id="code-title">From a move<br>to the board.</h2></div>
+        <div><p>The project separates game rules, turn control and console rendering. The API Documentation is generated from the current Java source.</p>
+          <div class="actions"><a class="button" href="docs/javadoc/index.html">Open API reference ↗</a><a class="button secondary" href="https://github.com/hongyime/playsplendor">View repository ↗</a></div>
+        </div>
+      </section>
+      <section class="section" aria-labelledby="tests-title">
+        <p class="eyebrow">MAKE A CHANGE WITH CONFIDENCE</p><h2 id="tests-title">Run the checks.</h2>
+        <div class="columns"><div><h3>Windows</h3><pre><code>.\test\run_tests.bat</code></pre></div><div><h3>macOS / Linux</h3><pre><code>bash test/run_tests.sh</code></pre></div></div>
+        <p class="note">The normal suite excludes network integration tests. Use <code>--class com.splendor.util.MoveFormatterTest</code> for a focused check. The README explains the optional network tests.</p>
+      </section>
+      <section id="archive" class="section" aria-labelledby="archive-title">
+        <p class="eyebrow">PROJECT HISTORY</p><h2 id="archive-title">Architecture archive.</h2>
+        <p>These UML Diagrams are restored from the repository history. Use the current API reference when checking today's classes and methods.</p>
+        <details><summary>Explore the five archived diagrams</summary><div class="diagrams">
+<figure><a href="diagrams/splendor.png"><img loading="lazy" src="diagrams/splendor.png" alt="Full class diagram from the historical Splendor architecture documentation"></a><figcaption>Full class diagram · <a href="diagrams/splendor.puml">PlantUML source</a></figcaption></figure>
+<figure><a href="diagrams/splendor-class-light.png"><img loading="lazy" src="diagrams/splendor-class-light.png" alt="Simplified classes from the historical Splendor architecture documentation"></a><figcaption>Simplified classes · <a href="diagrams/splendor-class-light.puml">PlantUML source</a></figcaption></figure>
+<figure><a href="diagrams/splendor-dependency.png"><img loading="lazy" src="diagrams/splendor-dependency.png" alt="Dependencies from the historical Splendor architecture documentation"></a><figcaption>Dependencies · <a href="diagrams/splendor-dependency.puml">PlantUML source</a></figcaption></figure>
+<figure><a href="diagrams/splendor-functional.png"><img loading="lazy" src="diagrams/splendor-functional.png" alt="Game flow from the historical Splendor architecture documentation"></a><figcaption>Game flow · <a href="diagrams/splendor-functional.puml">PlantUML source</a></figcaption></figure>
+<figure><a href="diagrams/splendor-inheritance.png"><img loading="lazy" src="diagrams/splendor-inheritance.png" alt="Inheritance from the historical Splendor architecture documentation"></a><figcaption>Inheritance · <a href="diagrams/splendor-inheritance.puml">PlantUML source</a></figcaption></figure>
+        </div></details>
+      </section>
+    </main>
+    <footer><span>Splendor · Java console game</span><a href="https://github.com/hongyime/playsplendor/blob/main/README.md">Read the full guide ↗</a></footer>
+  </div>
+</body>
 </html>

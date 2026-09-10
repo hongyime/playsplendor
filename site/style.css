@@ -1,0 +1,41 @@
+:root { color-scheme: light; --ink:#000; --paper:#fff; --grey:#a3a3a3; --soft:#f3f3f3; }
+* { box-sizing:border-box; }
+body { margin:0; color:var(--ink); background:var(--paper); font:17px/1.6 "Space Grotesk",Arial,sans-serif; }
+a { color:inherit; text-underline-offset:4px; }
+a:hover { text-decoration-thickness:3px; }
+:focus-visible { outline:3px solid var(--ink); outline-offset:5px; }
+.shell { max-width:1120px; margin:auto; padding:0 32px; }
+header,footer { display:flex; justify-content:space-between; align-items:center; gap:24px; padding:24px 0; }
+header { border-bottom:3px solid var(--ink); }
+.brand { font-size:17px; font-weight:800; text-decoration:none; }
+.utility,.eyebrow { font:700 12px/1.5 "Courier New",monospace; letter-spacing:1px; }
+.skip { position:absolute; top:-100px; left:20px; background:white; padding:12px; }
+.skip:focus { top:12px; }
+.intro { display:grid; grid-template-columns:1.65fr 1fr; gap:48px; padding:60px 0 44px; align-items:center; }
+h1 { font-size:clamp(42px,7vw,76px); line-height:1; letter-spacing:-3px; margin:12px 0 24px; }
+.lede { max-width:630px; font-size:20px; }
+.tokens { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; padding:26px; border:3px solid var(--ink); box-shadow:5px 8px 0 var(--ink); }
+.token { display:grid; place-items:center; aspect-ratio:1; border:3px solid black; border-radius:50%; font-weight:800; font-size:23px; background:var(--soft); }
+.red { background:#b42424; color:white; } .green { background:#246947; color:white; } .blue { background:#285597; color:white; } .black { background:#000; color:white; } .gold { background:#efd170; }
+.actions { display:flex; flex-wrap:wrap; gap:18px; margin:26px 0 0; }
+.button { display:inline-block; border:3px solid black; padding:12px 18px; font-weight:800; text-decoration:none; background:var(--ink); color:var(--paper); box-shadow:3px 4px 0 var(--grey); }
+.button.secondary { background:var(--paper); color:var(--ink); }
+.button:hover { background:var(--grey); color:var(--ink); }
+.section { padding:36px 0; border-top:3px solid var(--ink); }
+h2 { font-size:32px; line-height:1.15; letter-spacing:-1px; margin:0 0 18px; }
+h3 { font-size:20px; margin:0 0 12px; }
+p { margin:0 0 18px; }
+.columns { display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+.card { border:3px solid var(--ink); padding:24px; min-width:0; box-shadow:5px 8px 0 var(--ink); }
+pre { background:var(--soft); padding:16px; border-left:3px solid var(--ink); overflow:auto; font:14px/1.7 "Courier New",monospace; }
+code { font-family:"Courier New",monospace; overflow-wrap:anywhere; }
+.note { font-size:14px; margin-top:24px; max-width:750px; }
+.reference { display:grid; grid-template-columns:1fr 1.5fr; gap:32px; }
+details { border:2px solid black; padding:18px; margin-top:24px; }
+summary { cursor:pointer; font-weight:800; }
+.diagrams { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px; }
+figure { margin:0; border-top:2px solid black; padding-top:16px; min-width:0; }
+figure img { max-width:100%; height:auto; display:block; margin:12px 0; }
+figcaption { font-size:14px; }
+footer { border-top:3px solid var(--ink); font-size:13px; }
+@media(max-width:720px) { .shell { padding:0 20px; } .utility { display:none; } .intro { grid-template-columns:1fr; gap:28px; padding:36px 0; } h1 { letter-spacing:-2px; } .tokens { grid-template-columns:repeat(6,1fr); padding:16px; gap:10px; } .token { font-size:16px; border-width:2px; } .columns,.reference,.diagrams { grid-template-columns:1fr; } .lede { font-size:18px; } .card { padding:20px; } .actions { gap:14px; } .button { font-size:15px; } }

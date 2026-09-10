@@ -1,0 +1,116 @@
+@startuml splendor_dependency
+skinparam backgroundColor #FFFFFF
+skinparam linetype ortho
+skinparam rankdir LR
+skinparam shadowing false
+skinparam defaultFontSize 11
+skinparam padding 2
+skinparam nodesep 20
+skinparam ranksep 30
+skinparam packageStyle rectangle
+
+title Splendor — Package Dependency Diagram
+
+package "com.splendor" #LightYellow {
+  class Main
+}
+package "com.splendor.config" #LightBlue {
+  interface IConfigProvider
+  class FileConfigProvider
+  class ConfigValidator
+  class ConfigKeys
+  IConfigProvider <|.. FileConfigProvider
+}
+package "com.splendor.exception" #MistyRose {
+  class SplendorException
+  class ConfigException
+  class DataLoadException
+  SplendorException <|-- GameStateException
+  SplendorException <|-- InsufficientTokensException
+  SplendorException <|-- InvalidMoveException
+  SplendorException <|-- InvalidPlayerActionException
+  SplendorException <|-- NetworkException
+  class GameStateException
+  class InsufficientTokensException
+  class InvalidMoveException
+  class InvalidPlayerActionException
+  class NetworkException
+}
+package "com.splendor.model" #LightGreen {
+  class Game
+  class Board
+  class Player
+  class ComputerPlayer
+  class Card
+  class Noble
+  enum Gem
+  class Move
+  enum MoveType
+  enum GameState
+  enum MenuAction
+  class MenuOption
+  Player <|-- ComputerPlayer
+  Game *-- Board
+  Game *-- Player
+}
+package "com.splendor.model.validator" #PaleGreen {
+  class GameRuleValidator
+  class MoveValidator
+  class ValidationResult
+  MoveValidator ..> ValidationResult
+}
+package "com.splendor.controller" #LightCoral {
+  class GameController
+  class TurnController
+  class PlayerController
+  class BotStrategy
+  class MenuBuilder
+}
+package "com.splendor.view" #LightCyan {
+  interface IGameView
+  class ConsoleView
+  class GameRenderer
+  class CardRenderer
+  class NetworkGameView
+  class RemoteView
+  class Colors
+  IGameView <|.. ConsoleView
+  IGameView <|.. NetworkGameView
+  IGameView <|.. RemoteView
+  NetworkGameView *-- RemoteView
+}
+package "com.splendor.network" #Lavender {
+  interface NetworkMessageHandler
+  class ServerSocketHandler
+  class ClientHandler
+  NetworkMessageHandler <|.. ServerSocketHandler
+  ServerSocketHandler *-- ClientHandler
+}
+package "com.splendor.data" #Wheat {
+  class CardLoader
+  class CsvCardParser
+  CardLoader ..> CsvCardParser
+}
+package "com.splendor.util" #LightGray {
+  class AnsiUtils
+  class GameLogger
+  class InputResolver
+  class MoveFormatter
+}
+
+' Inter-package dependencies
+Main ..> "com.splendor.config" : uses
+Main ..> "com.splendor.controller" : creates
+Main ..> "com.splendor.network" : creates (server mode)
+"com.splendor.controller" ..> "com.splendor.model" : manages
+"com.splendor.controller" ..> "com.splendor.view" : uses
+"com.splendor.controller" ..> "com.splendor.model.validator" : uses
+"com.splendor.view" ..> "com.splendor.network" : uses (remote)
+"com.splendor.view" ..> "com.splendor.util" : uses
+"com.splendor.model" ..> "com.splendor.data" : loads
+"com.splendor.model" ..> "com.splendor.config" : reads
+"com.splendor.config" ..> "com.splendor.exception" : throws
+"com.splendor.data" ..> "com.splendor.exception" : throws
+"com.splendor.network" ..> "com.splendor.exception" : throws
+
+@enduml

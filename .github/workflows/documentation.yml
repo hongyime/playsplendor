@@ -1,68 +1,62 @@
-name: Documentation Update
+name: Splendor checks and Pages
 
 on:
   push:
-    branches: [ main, develop ]
-    paths:
-      - 'src/**/*.java'
-      - 'docs/diagrams/**/*.puml'
-      - 'docs/diagrams/**/*.mmd'
+    branches: [main]
+    paths: &site-paths
+      - 'src/**'
+      - 'test/**'
+      - 'lib/**'
+      - 'scripts/**'
+      - 'site/**'
+      - 'index.html'
+      - 'README.md'
+      - 'compile.*'
       - 'generate_docs_enhanced.*'
       - '.github/workflows/documentation.yml'
+      - '.github/workflows/splendor-tests.yml'
   pull_request:
-    branches: [ main ]
-    paths:
-      - 'src/**/*.java'
-      - 'docs/diagrams/**/*.puml'
-
+    branches: [main]
+    paths: *site-paths
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: splendor-pages-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  generate-docs:
+  verify:
+    uses: ./.github/workflows/splendor-tests.yml
+  build:
+    needs: verify
     runs-on: ubuntu-latest
-
+    timeout-minutes: 10
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v7
-
-    - name: Set up JDK 17
-      uses: actions/setup-java@v6
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-
-    - name: Generate Javadoc
-      run: |
-        javadoc -d docs/javadoc -sourcepath src -subpackages com.splendor \
-          -encoding UTF-8 -charset UTF-8 -version -author -use -splitindex \
-          -windowtitle "Splendor Game API Documentation" \
-          -Xdoclint:all -Xdoclint:-missing -quiet
-
-    - name: Cache PlantUML
-      id: cache-plantuml
-      uses: actions/cache@v6
-      with:
-        path: docs/diagrams/plantuml.jar
-        key: ${{ runner.os }}-plantuml-${{ hashFiles('docs/diagrams/plantuml.jar') }}
-
-    - name: Download PlantUML (if not cached)
-      if: steps.cache-plantuml.outputs.cache-hit != 'true'
-      run: |
-        if [ ! -f docs/diagrams/plantuml.jar ]; then
-          curl -L -o docs/diagrams/plantuml.jar \
-            https://github.com/plantuml/plantuml/releases/download/v1.2023.13/plantuml-1.2023.13.jar
-        fi
-
-    - name: Generate PlantUML diagrams
-      run: |
-        mkdir -p docs/diagrams/auto_generated
-        for f in docs/diagrams/splendor*.puml docs/diagrams/splendor-*.puml; do
-          [ -f "$f" ] && java -jar docs/diagrams/plantuml.jar \
-            -SbackgroundColor=#FFFFFF -tpng "$f" -o auto_generated
-        done
-
-    - name: Validate Documentation
-      run: |
-        [ -f docs/javadoc/index.html ] || (echo "Javadoc missing" && exit 1)
-        [ -f docs/index.html ]         || (echo "docs/index.html missing" && exit 1)
-        echo "Documentation validation complete"
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Build the guide and current API documentation
+        run: python3 scripts/build_site.py --output '${{ runner.temp }}/splendor-site'
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: '${{ runner.temp }}/splendor-site'
+          retention-days: 1
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

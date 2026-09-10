@@ -1,20 +1,19 @@
 # Splendor (Java Implementation)
 
-Live demo: https://hongyime.github.io/playsplendor/
+Project guide and Java API: https://hongyime.github.io/playsplendor/
+
+The hosted site contains documentation. Run the Java console game on your computer; TCP multiplayer requires a separately running Java server.
 
 
 ![Java Version](https://img.shields.io/badge/Java-17%2B-blue)
-![License](https://img.shields.io/badge/License-Educational-green)
+![License](https://img.shields.io/badge/License-Apache--2.0-green)
 
 A modular, strictly MVC-based implementation of the board game Splendor in Java.
 
 ## Quick Start
 
 ```bash
-# One-time environment bootstrap (installs/downloads required tooling artifacts)
-./setup_requirements.sh    # Unix/macOS
-.\setup_requirements.bat   # Windows
-
+# Install a JDK 17 or newer, then clone or download this repository.
 # Build the project
 ./compile.sh    # Unix/macOS
 .\compile.bat   # Windows
@@ -57,42 +56,21 @@ java -cp classes com.splendor.Main --server
   - **Undo Feature**: Allows players to undo their last turn by typing `Z` or `UNDO`.
 - **Network Support**: Multiplayer capabilities via TCP sockets.
 - **Bot/CPU Players**: Name a player with "bot" in the name to enable computer-controlled opponents.
-- **Automated Documentation**: Javadoc generation with pre-commit validation.
+- **Automated Documentation**: Current Javadoc is built and validated before GitHub Pages deployment.
 
 ## Architecture Overview
 
 The project follows a strict MVC pattern to ensure separation of concerns. The Controller layer orchestrates the game logic by delegating specific tasks to specialized sub-controllers and validators.
 
-![Architecture Diagram](./docs/diagrams/mermaid/png/system_architecture.png)
+The archived diagrams below were recovered from the project's Git history. They document an earlier design and are preserved as reference; the [generated Java API](https://hongyime.github.io/playsplendor/docs/javadoc/index.html) reflects the current source.
 
-<details>
-<summary>📋 View Architecture Diagram Source (.mmd)</summary>
+![Archived class diagram](site/diagrams/splendor-class-light.png)
 
-[`docs/diagrams/mermaid/src/system_architecture.mmd`](./docs/diagrams/mermaid/src/system_architecture.mmd)
-
-</details>
-
-![Game State Diagram](./docs/diagrams/README_diagram_2.png)
-
-<details>
-<summary>📋 View State Diagram Source (.mmd)</summary>
-
-[`docs/diagrams/README_diagram_2.mmd`](./docs/diagrams/README_diagram_2.mmd)
-
-</details>
+[PlantUML source](site/diagrams/splendor-class-light.puml) · [All five diagrams and sources](https://hongyime.github.io/playsplendor/#archive)
 
 ## Gameplay Flow
 
-The following sequence diagram illustrates the standard turn lifecycle, including validation and special post-turn checks for noble visits or token limits.
-
-![Turn Sequence Diagram](./docs/diagrams/README_diagram_3.png)
-
-<details>
-<summary>📋 View Sequence Diagram Source (.mmd)</summary>
-
-[`docs/diagrams/README_diagram_3.mmd`](./docs/diagrams/README_diagram_3.mmd)
-
-</details>
+Choose an available action, select the gems or card requested by the prompt, and confirm the move. The controllers validate it before applying end-of-turn noble and token-limit checks. Invalid inputs return to the relevant prompt.
 
 ## How to Play
 
@@ -142,30 +120,10 @@ Include "bot" in a player's name (e.g., "Bot1", "AngryBot") to make them a compu
 
 ### Prerequisites
 
-- Java JDK 17 or higher
-- Node.js + npm (for Mermaid diagram rendering used by docs pipeline)
-- Graphviz (`dot`) for PlantUML PNG rendering
-- Python 3 + pip (validation/automation helper environment)
+- Java JDK 17 or higher for the game and tests. The JUnit console runner is included in `lib/`.
+- Python 3.9 or higher for the documentation builder and Bash runner fixtures.
 
-### Environment Bootstrap (Recommended)
-
-Run the setup script once before running tests or CI-style docs checks:
-
-**Windows:**
-```batch
-.\setup_requirements.bat
-```
-
-**Unix/macOS:**
-```bash
-./setup_requirements.sh
-```
-
-What it verifies/installs:
-- Validates Java/Node/Python/Graphviz executables.
-- Installs npm dependencies (including Mermaid CLI) if needed.
-- Downloads `lib/junit-platform-console-standalone-1.10.2.jar` if missing.
-- Downloads `docs/diagrams/plantuml.jar` if missing.
+The normal build, test and documentation commands do not install packages or download diagram tools. The old `setup_requirements.*` scripts are optional legacy diagram-tool bootstraps; they are not needed for these commands.
 
 ### Building
 
@@ -285,7 +243,7 @@ Game settings in `src/resources/config.properties`:
 ### Running Tests
 
 Prerequisites:
-- Run `setup_requirements.(sh|bat)` to ensure test/pipeline dependencies are present.
+- Install a JDK 17 or newer. The bundled JUnit runner is used directly.
 - By default, `test/run_tests.(sh|bat)` excludes `com.splendor.network` integration tests to avoid blocking automated/local pipelines.
 - To include network tests explicitly, pass `--include-network`.
 
@@ -301,7 +259,7 @@ bash test/run_tests.sh
 
 Run a specific class:
 ```bash
-bash test/run_tests.sh --class com.splendor.controller.GameLogicTest
+bash test/run_tests.sh --class com.splendor.util.MoveFormatterTest
 ```
 
 Run by package/category:
@@ -317,6 +275,9 @@ The test suite uses JUnit 5 and covers:
 - **Validators**: Move validation, rule enforcement
 - **Controllers**: Turn logic, game flow
 - **Edge Cases**: Invalid inputs, boundary conditions
+- **Documentation**: Generate real Javadoc, check every source type and package, and validate the five preserved diagram pairs
+
+CI runs the full non-network suite on both Linux and Windows with Java 17 from a checkout path containing spaces. Six synthetic Bash runner checks also cover argument boundaries, explicit network opt-in, selectors, exclusion patterns and failure exit codes. Selecting no tests fails the command. Network integration tests remain explicitly opt-in.
 
 ### Where the test code lives
 
@@ -344,55 +305,20 @@ Windows `.bat` counterparts exist for the main shell scripts:
 
 ## Project Structure
 
-```
+```text
 splendor/
-├── compile.bat / compile.sh      # Build scripts
-├── run.bat / run.sh              # Run scripts
-├── setup_requirements.bat / setup_requirements.sh  # Environment dependency checker
-├── generate_docs.bat / generate_docs.sh  # Documentation generator
-├── README.md                      # This file
-├── PRD.md                         # Product Requirements Document
-├── RULES.md                       # Game Rules
-├── docs/DOCUMENTATION.md      # Javadoc Standards
+├── compile.bat / compile.sh      # Java 17-compatible build
+├── run.bat / run.sh              # Console game
+├── index.html                   # Project guide source
+├── scripts/build_site.py        # Isolated static-site build and link validation
+├── site/
+│   ├── style.css                # Prawn visual style
+│   └── diagrams/                # Archived PNG/PlantUML pairs and provenance
 ├── src/
-│   └── com/splendor/
-│       ├── Main.java             # Entry point
-│       ├── config/               # Configuration management
-│       ├── model/                # Game logic and state
-│       │   ├── Game.java
-│       │   ├── Player.java
-│       │   ├── Board.java
-│       │   ├── Card.java
-│       │   ├── Gem.java
-│       │   └── validator/        # Move and rule validation
-│       ├── view/                 # User interface
-│       │   ├── IGameView.java
-│       │   ├── ConsoleView.java
-│       │   └── RemoteView.java
-│       ├── controller/           # Game orchestration
-│       │   ├── GameController.java
-│       │   ├── TurnController.java
-│       │   └── PlayerController.java
-│       ├── network/              # Network multiplayer
-│       │   ├── ServerSocketHandler.java
-│       │   └── ClientHandler.java
-│       ├── data/                 # Data loading (CSV)
-│       │   └── CardLoader.java
-│       ├── util/                 # Utilities
-│       │   ├── InputResolver.java
-│       │   ├── GameLogger.java
-│       │   └── GemParser.java
-│       └── exception/            # Custom exceptions
-│           └── SplendorException.java
-├── classes/                      # Compiled classes (generated)
-├── docs/
-│   ├── javadoc/                  # Generated API documentation
-│   └── diagrams/                 # PlantUML diagrams
-│       └── mermaid/              # Mermaid diagram exports
-├── resources/
-│   ├── config.properties         # Game configuration
-│   └── card_data.csv             # Card data
-└── test/                         # Unit tests
+│   ├── com/splendor/            # MVC game, networking and utilities
+│   └── resources/              # Original card CSV and configuration
+├── lib/                        # Bundled JUnit runner
+└── test/                       # Game, documentation and runner tests
 ```
 
 ## Contributing
@@ -412,66 +338,29 @@ splendor/
 - **Testing**: Write unit tests for new functionality.
 - **Style**: Follow Java naming conventions and Google Java Style Guide.
 
-### CI/CD
+### CI/CD and documentation
 
-The repository currently uses GitHub Actions workflows for:
-- CI test execution (`.github/workflows/ci.yml`)
-- Javadoc publish (`.github/workflows/javadoc.yml`)
-- Documentation generation/deployment (`.github/workflows/documentation.yml`)
-- Security scanning (`.github/workflows/trufflehog.yml`)
-
-### Java Change Doc Pipeline (Required)
-
-When adding/editing/removing Java classes, interfaces, enums, or public methods, run:
+Run the tests, then build the complete static site:
 
 ```bash
-node render_diagrams.js
-bash test/ci/generate_javadoc.sh
-node test/ci/verify_javadoc_index.js
-bash test/ci/docs_guard.sh
+bash test/run_tests.sh
+python3 scripts/build_site.py
 ```
 
-Consolidated one-command option:
-
-```bash
-bash test/ci/docs_pipeline.sh
-```
-
-Windows equivalents:
+On Windows:
 
 ```batch
-test\ci\docs_pipeline.bat
-test\ci\generate_javadoc.bat
-test\ci\docs_guard.bat
+test\run_tests.bat
+python scripts\build_site.py
 ```
 
-Note: if `mmdc` is not installed, `docs_pipeline` will skip diagram rendering and continue using existing PNG artifacts.
+The builder prints the new output directory. Open its `index.html`, or serve that directory with `python -m http.server --bind 127.0.0.1 --directory <output-directory>` for local browsing. To choose a destination, use `--output <empty-directory>`; existing populated output directories are rejected so old artifacts cannot silently mix with a new build.
 
-This ensures externalized Mermaid sources, regenerated PNG diagrams, and Javadoc index/content stay synchronized.
+The builder uses the installed JDK to generate API pages for every current Java source type, copies the guide and archived diagrams, validates local file links, and writes `release.json` with the Git commit and file hashes. It preserves the published `docs/javadoc/index.html` URL. No Node, PlantUML, Supabase or Vercel runtime is required by this static site.
 
-### Execution Order (Manual vs CI)
+`generate_docs_enhanced.*` and `test/ci/docs_pipeline.*` delegate to this builder and accept the same options. Older standalone diagram scripts remain available for historical authoring workflows; they are not part of the normal build.
 
-**Manual local order (recommended):**
-1. `bash test/run_tests.sh`
-2. `bash test/ci/docs_pipeline.sh` (or run the 4 underlying commands individually)
-3. Commit generated docs/diagram updates if changed.
-
-**CI order (`.github/workflows/ci.yml`):**
-1. `bash test/run_tests.sh`
-2. `bash test/ci/docs_guard.sh`
-
-**Docs automation order (`.github/workflows/documentation.yml`):**
-1. `generate_docs_enhanced.(sh|bat)`
-2. Validate generated docs presence
-3. Upload artifacts / optional deploy
-
-### Where to change image background behavior
-
-To enforce **white backgrounds** for generated diagrams in both manual and CI flows:
-- Mermaid render config: `render_diagrams.js`, `extract_diagrams.js`
-- PlantUML render config: `generate_docs_enhanced.sh`, `generate_docs_enhanced.bat`, `generate_auto_uml.sh`
-
-These are the source-of-truth script locations used by the pipelines.
+`.github/workflows/documentation.yml` calls the reusable Linux/Windows test workflow, builds a small static artifact, and deploys it to GitHub Pages only from `main` after checks pass. Pull requests build and validate without production deployment. Generated API files stay in the build artifact; only guide source and preserved diagram assets are tracked. Source and site changes trigger a build, with no scheduled refresh or application database requests.
 
 ### Reporting Issues
 
