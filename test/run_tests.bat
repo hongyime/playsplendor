@@ -60,11 +60,11 @@ set "TEST_FILES="
 for /r test %%f in (*.java) do (
     set "FILE_PATH=%%f"
     if defined INCLUDE_NETWORK (
-        set "TEST_FILES=!TEST_FILES! %%f"
+        set "TEST_FILES=!TEST_FILES! "%%f""
     ) else (
         set "WITHOUT_NETWORK=!FILE_PATH:\test\com\splendor\network\=!"
         if /I "!WITHOUT_NETWORK!"=="!FILE_PATH!" (
-            set "TEST_FILES=!TEST_FILES! %%f"
+            set "TEST_FILES=!TEST_FILES! "%%f""
         )
     )
 )
@@ -73,7 +73,7 @@ if not defined INCLUDE_NETWORK (
     echo    Network tests excluded from compilation. Use --include-network to include them.
 )
 
-if "!TEST_FILES!"=="" (
+if not defined TEST_FILES (
     echo    No test files found in test/
     exit /b 0
 )
