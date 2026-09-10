@@ -1,3 +1,19 @@
+name: Legacy Javadoc workflow location
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  documentation-location:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - run: echo 'Use Splendor checks and Pages (documentation.yml) to build, test and publish current documentation.'
+
+# Historical workflow retained as comments. It is superseded by documentation.yml.
 # name: Publish Javadoc to GitHub Pages
 
 # on:

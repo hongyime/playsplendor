@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import tempfile
@@ -13,6 +14,18 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
+CSS_URL = re.compile(r'''url\(\s*(?:(['"])(.*?)\1|([^'"\s][^)]*))\s*\)''', re.DOTALL)
+
+
+def use_available_javadoc_fonts(output: Path) -> None:
+    """Some Java 17 distributions reference DejaVu assets they do not ship."""
+    stylesheet = output / 'docs/javadoc/stylesheet.css'
+    fonts = output / 'docs/javadoc/resources/fonts/dejavu.css'
+    if stylesheet.is_file() and not fonts.is_file():
+        css = stylesheet.read_text(encoding='utf-8')
+        css = css.replace("@import url('resources/fonts/dejavu.css');",
+                          '/* Optional DejaVu assets are absent; use the existing system-font fallbacks. */')
+        stylesheet.write_text(css, encoding='utf-8')
 
 
 class Links(HTMLParser):
@@ -26,10 +39,15 @@ class Links(HTMLParser):
 
 def verify_links(output: Path) -> int:
     checked = 0
-    for page in output.rglob('*.html'):
-        links = Links()
-        links.feed(page.read_text(encoding='utf-8'))
-        for url in links.urls:
+    for page in [*output.rglob('*.html'), *output.rglob('*.css')]:
+        content = page.read_text(encoding='utf-8')
+        if page.suffix == '.css':
+            urls = [(match.group(2) or match.group(3)).strip() for match in CSS_URL.finditer(content)]
+        else:
+            links = Links()
+            links.feed(content)
+            urls = links.urls
+        for url in urls:
             parsed = urlsplit(url)
             if parsed.scheme or parsed.netloc or not parsed.path:
                 continue
@@ -53,6 +71,7 @@ def build_site(output: Path) -> dict:
                '-charset', 'UTF-8', '-Xdoclint:all,-missing', '-quiet', '-notimestamp', '--release', '17',
                '-windowtitle', 'Splendor Java API']
     subprocess.run(command, cwd=ROOT, check=True, timeout=120)
+    use_available_javadoc_fonts(output)
     shutil.copyfile(ROOT / 'index.html', output / 'index.html')
     shutil.copyfile(ROOT / 'site/style.css', output / 'style.css')
     shutil.copytree(ROOT / 'site/diagrams', output / 'diagrams')

@@ -31,6 +31,10 @@ jobs:
         if: runner.os == 'Linux'
         working-directory: 'Splendor workspace'
         run: bash test/run_tests.sh
+      - name: Check documentation CSS asset validation
+        if: runner.os == 'Linux'
+        working-directory: 'Splendor workspace'
+        run: python3 test/site_builder_checks.py -v
       - name: Run the full non-network suite on Windows
         if: runner.os == 'Windows'
         working-directory: 'Splendor workspace'
