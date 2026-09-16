@@ -8,3 +8,12 @@
 - Original card/config bytes and all ten archived PNG/PlantUML bytes match historical Git blobs. The automatic postcss-selector-parser update e7066dd is preserved. The guide follows Prawn Projects styling, loads archived images on demand and uses no Supabase/Vercel runtime or scheduled polling. The normal documentation build uses the installed JDK and Python standard library.
 - Java 17 referenced an optional DejaVu stylesheet absent from its output; the builder now uses existing system-font fallbacks only when that file is absent and validates CSS assets. The old all-comment javadoc.yml is a valid manual-only notice; historical commands remain inactive.
 - Remaining portfolio work: network multiplayer runtime/resource bounds, legacy npm diagram-tool advisories (including extract-zip and js-yaml), and the packaged-data storage exception. No live multiplayer server, private account records, Supabase migration or paid service was used. Continue the repository rotation and unresolved portfolio storage/usage work; this release does not establish portfolio-wide free-tier headroom.
+
+---
+2026-09-16: npm vuln fix by Sisyphus-Junior.
+- Branch: fix/playsplendor-npm-vulns-20260916
+- npm audit fix ran: 2 packages added, 22 changed, 0 vulnerabilities remaining.
+- Fixed: extract-zip path traversal (GHSA-jmr9-qjv8-65gv, GHSA-7pqw-9j4j-h8q3), js-yaml DoS (GHSA-2883-xcg3-v3hh), puppeteer chain.
+- Only package-lock.json changed (transitive deps); package.json unchanged.
+- PR opened against main — do NOT merge until after 2026-09-16T07:14:05Z UTC (Vercel hold).
+- Remaining portfolio work: network multiplayer runtime/resource bounds, packaged-data storage exception.
