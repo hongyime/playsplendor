@@ -15,5 +15,5 @@
 - npm audit fix ran: 2 packages added, 22 changed, 0 vulnerabilities remaining.
 - Fixed: extract-zip path traversal (GHSA-jmr9-qjv8-65gv, GHSA-7pqw-9j4j-h8q3), js-yaml DoS (GHSA-2883-xcg3-v3hh), puppeteer chain.
 - Only package-lock.json changed (transitive deps); package.json unchanged.
-- PR opened against main — do NOT merge until after 2026-09-16T07:14:05Z UTC (Vercel hold).
+- PR #153 opened against main — do NOT merge until after 2026-09-16T07:14:05Z UTC (Vercel hold). https://github.com/hongyime/playsplendor/pull/153
 - Remaining portfolio work: network multiplayer runtime/resource bounds, packaged-data storage exception.
