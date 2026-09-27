@@ -17,3 +17,7 @@
 - Only package-lock.json changed (transitive deps); package.json unchanged.
 - PR opened against main — do NOT merge until after 2026-09-16T07:14:05Z UTC (Vercel hold).
 - Remaining portfolio work: network multiplayer runtime/resource bounds, packaged-data storage exception.
+
+## Reviewed workspace maintenance - 2026-09-27
+
+Publish the reviewed portability and privacy maintenance from the current default branch, preserving concurrent upstream work and original workspace changes. Validation is limited to the documented offline fixtures and hosted checks; no live data job or deployment command was executed locally.
