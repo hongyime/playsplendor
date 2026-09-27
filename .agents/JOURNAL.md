@@ -6,3 +6,5 @@
 - 2026-09-11: Verified production a7d6dfd against all 113 uploaded artifact files and seven browser scenarios after the font fix. All 49 source types and 2,773 HTML/CSS links are covered; the original data and archived Git blobs remain intact. Retain open multiplayer and legacy-tool advisory work in the portfolio rotation.
 - 2026-09-16: Baseline triage. HEAD c49b0b1, main clean. 4 open dependabot PRs (CI action bumps). 5 HIGH npm vulns in mermaid-cli dep chain (extract-zip path traversal CVSS 8.1, js-yaml DoS CVSS 7.5, puppeteer chain) — all fixAvailable=true. Attempting npm audit fix PR.
 - 2026-09-16: npm audit fix applied on branch fix/playsplendor-npm-vulns-20260916. extract-zip path traversal (GHSA-jmr9-qjv8-65gv, GHSA-7pqw-9j4j-h8q3 CVSS 8.1), js-yaml DoS (GHSA-2883-xcg3-v3hh CVSS 7.5), puppeteer chain all resolved. Only package-lock.json changed (2 added, 22 updated); package.json unchanged. 0 vulns post-fix. PR pending merge after Vercel hold expires 2026-09-16T07:14:05Z UTC.
+
+- 2026-09-27: Prepared reviewed portability/privacy changes on the current default branch with maintenance-only file selection and preserved original workspace state.

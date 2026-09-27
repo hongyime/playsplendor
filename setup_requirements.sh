@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
+cd "$(dirname "$0")" || exit 1
 
 echo "🔧 Splendor environment requirements check (Unix)"
 echo
