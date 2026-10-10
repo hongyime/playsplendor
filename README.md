@@ -289,6 +289,14 @@ CI runs the full non-network suite on both Linux and Windows with Java 17 from a
 
 ### Script parity (.sh and .bat)
 
+On Linux, use `bash compile.sh`, `bash run.sh`, and `bash test/run_tests.sh`.
+The run and setup scripts now resolve the checkout directory when called from
+elsewhere. Diagram verification also has a Linux entry point:
+`sh test/ci/verify_diagram_assets.sh`, matching the existing batch helper.
+Calling shell scripts through `sh`/`bash` works on SMB mounts that do not preserve
+executable permission bits. Keep build outputs and dependencies separate when
+using different operating systems.
+
 Windows `.bat` counterparts exist for the main shell scripts:
 - `compile.sh` ↔ `compile.bat`
 - `run.sh` ↔ `run.bat`
