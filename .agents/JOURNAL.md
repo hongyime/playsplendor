@@ -8,3 +8,5 @@
 - 2026-09-16: npm audit fix applied on branch fix/playsplendor-npm-vulns-20260916. extract-zip path traversal (GHSA-jmr9-qjv8-65gv, GHSA-7pqw-9j4j-h8q3 CVSS 8.1), js-yaml DoS (GHSA-2883-xcg3-v3hh CVSS 7.5), puppeteer chain all resolved. Only package-lock.json changed (2 added, 22 updated); package.json unchanged. 0 vulns post-fix. PR pending merge after Vercel hold expires 2026-09-16T07:14:05Z UTC.
 
 - 2026-09-27: Prepared reviewed portability/privacy changes on the current default branch with maintenance-only file selection and preserved original workspace state.
+- 2026-09-27: Linux launch/setup now resolve the checkout location; added a Linux diagram-verification wrapper. Offline stub contracts passed; no Java build, download or installation ran.
+

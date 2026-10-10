@@ -1,3 +1,7 @@
+## Portability maintenance - 2026-09-27
+
+- Linux launch/setup now resolve the checkout location; added a Linux diagram-verification wrapper. Offline stub contracts passed; no Java build, download or installation ran.
+
 # Current work
 
 2026-09-11: Splendor test-runner and public-documentation repair is production-verified.
